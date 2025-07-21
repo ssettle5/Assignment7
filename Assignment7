@@ -1,1 +1,66 @@
+import java.util.Scanner;
+
+public class Assignment7 {
+    public static void main(String[] args) throws InterruptedException {
+        Scanner scanner = new Scanner(System.in);
+        Inventory inventory = new Inventory();
+
+        // Create item catalog
+        Item tShirt = new Item("t-shirt", 6.50);
+        Item sweater = new Item("sweater", 8.50);
+        Item sweatpants = new Item("sweatpants", 10.00);
+        Item skirt = new Item("skirt", 25.50);
+        Item dress = new Item("dress", 15.50);
+
+        Item[] items = {tShirt, sweater, sweatpants, skirt, dress};
+        Purchaser[] purchasers = new Purchaser[5];
+
+        System.out.println("[Order Queue Simulator]");
+
+        // Ask user for quantity per item
+        for (int i = 0; i < items.length; i++) {
+            System.out.printf("Purchase how many '%s' at $%.2f? ", items[i].description, items[i].cost);
+            int quantity = Integer.parseInt(scanner.nextLine());
+            purchasers[i] = new Purchaser(inventory, items[i], quantity);
+        }
+
+        System.out.println("\nPurchasers created. Press 'enter' to start purchases...");
+        scanner.nextLine();
+
+        System.out.println("Purchasers have started working...");
+        for (Purchaser p : purchasers) {
+            p.start();
+        }
+        for (Purchaser p : purchasers) {
+            p.join();
+        }
+
+        System.out.printf("\nPurchasers are done working. A total of %d items are awaiting processing.\n",
+                inventory.getQueueSize());
+
+        System.out.print("\nCreate how many processors? ");
+        int processorCount = Integer.parseInt(scanner.nextLine());
+
+        Processor[] processors = new Processor[processorCount];
+        for (int i = 0; i < processorCount; i++) {
+            processors[i] = new Processor(inventory);
+        }
+
+        System.out.println("\nOrderProcessors created. Press 'enter' to start processing orders...");
+        scanner.nextLine();
+
+        System.out.println("Processors are now working...");
+        for (Processor p : processors) {
+            p.start();
+        }
+        for (Processor p : processors) {
+            p.join();
+        }
+
+        System.out.printf("\n%d items were processed for a total of $%.2f.\n",
+                inventory.getItemsProcessed(), inventory.retrieveBalance());
+        System.out.println("Simulation complete.");
+        scanner.close();
+    }
+}
 
