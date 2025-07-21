@@ -1,0 +1,35 @@
+import java.util.*;
+
+public class Inventory {
+    private double balance = 0;
+    private int itemsProcessed = 0;
+    private List<Item> processingQueue = new LinkedList<>();
+
+    public synchronized void addItem(Item item) {
+        processingQueue.add(item);
+    }
+
+    public synchronized Item retrieveItem() {
+        if (processingQueue.isEmpty()) {
+            return null;
+        }
+        itemsProcessed++;
+        return processingQueue.remove(0);
+    }
+
+    public synchronized void incrementBalance(double value) {
+        balance += value;
+    }
+
+    public synchronized double retrieveBalance() {
+        return balance;
+    }
+
+    public synchronized int getQueueSize() {
+        return processingQueue.size();
+    }
+
+    public synchronized int getItemsProcessed() {
+        return itemsProcessed;
+    }
+}
